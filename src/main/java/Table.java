@@ -2,11 +2,13 @@
     import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+    import java.math.BigInteger;
+
     public class Table {
 
         @SerializedName("code_doc_b")
         @Expose
-        private Integer codeDocB;
+        private BigInteger codeDocB;
         @SerializedName("code_cat")
         @Expose
         private Integer codeCat;
@@ -86,11 +88,11 @@ import com.google.gson.annotations.SerializedName;
         @Expose
         private Integer used;
 
-        public Integer getCodeDocB() {
+        public BigInteger getCodeDocB() {
             return codeDocB;
         }
 
-        public void setCodeDocB(Integer codeDocB) {
+        public void setCodeDocB(BigInteger codeDocB) {
             this.codeDocB = codeDocB;
         }
 

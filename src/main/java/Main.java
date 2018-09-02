@@ -1,34 +1,44 @@
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.reflect.TypeToken;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.io.Reader;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class Main {
 
     public static void main(String[] args) {
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
         //Call<ArrayList<GetJson>> call=ConnectToZZap.getZzapApi().getInfo("19010RZAA51", "HONDA");
-        ConnectToZZap.getZzapApi().getInfo().enqueue(new Callback<GetJson>() {
-            public void onResponse(Call<GetJson> call, Response<GetJson> response) {
-                GetJson getJson=response.body();
-                System.out.println("Start printing");
+        ConnectToZZap.getZzapApi().getInfo().enqueue(new Callback<ResponseBody>() {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-//                for (Table g:getJson.getTable()) {
-//                    System.out.println(g);
-//
-//                }
+                System.out.println("Start printing");
+                try {
+                    String s=response.body().string();
+
+                    while (s.charAt(0)!='{') {
+                        s=s.substring(1);
+                    }
+                    s=s.substring(0,s.length()-9);
+                    System.out.println(s);
+                    Gson gson = new Gson();
+
+                    //Type collectionType = new TypeToken<GetJson>(){}.getType();
+                    GetJson getJson2 = gson.fromJson(s, GetJson.class);
+
+                    for (Table itrTable : getJson2.getTable()) {
+                        System.out.println(itrTable.getClassMan());
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
-            public void onFailure(Call<GetJson> call, Throwable throwable) {
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 System.out.println("Bad");
                 throwable.printStackTrace();
             }

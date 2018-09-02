@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -20,7 +21,7 @@ import retrofit2.http.Query;
 
         //Call<ArrayList<GetJson>> getInfo(@Path("part_number") String partnumber, @Path("maker") String maker);
 
-            Call<GetJson> getInfo();
+            Call<ResponseBody> getInfo();
         //Observable<List<GetJson>> getInfo();
 
     }
