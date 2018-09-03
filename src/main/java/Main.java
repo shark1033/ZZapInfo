@@ -11,8 +11,8 @@ import java.lang.reflect.Type;
 public class Main {
 
     public static void main(String[] args) {
-        //Call<ArrayList<GetJson>> call=ConnectToZZap.getZzapApi().getInfo("19010RZAA51", "HONDA");
-        ConnectToZZap.getZzapApi().getInfo().enqueue(new Callback<ResponseBody>() {
+        //Call<ArrayList<GetJson>> call=ConnectToZZap.getZzapApi().getInfo();
+        ConnectToZZap.getZzapApi().getInfo("165959455L", "AUDI").enqueue(new Callback<ResponseBody>() {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 System.out.println("Start printing");
