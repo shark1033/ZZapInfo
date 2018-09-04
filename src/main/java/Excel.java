@@ -46,7 +46,8 @@ public class Excel {
     //перезаписываем и закрваем файл
     public void saveAndClose(FileInputStream file){
         try {
-            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\shark\\Desktop\\ПРАЙС И ТЕРМАЛ.xls")));
+           // myExcelBook.write(new FileOutputStream(new File("C:\\Users\\shark\\Desktop\\ПРАЙС И ТЕРМАЛ.xls")));
+            myExcelBook.write(new FileOutputStream(new File("..\\ПРАЙС И ТЕРМАЛ.xls")));
             file.close();
         } catch (IOException e) {
             e.printStackTrace();
