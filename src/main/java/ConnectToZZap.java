@@ -1,15 +1,9 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.sun.org.apache.xerces.internal.impl.msg.XMLMessageFormatter_fr;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.util.Formatter;
 
 public class ConnectToZZap {
     private static String  BASE_URL = "https://www.zzap.ru";
@@ -35,14 +29,7 @@ public class ConnectToZZap {
                 .client(httpClient.build())
                 .build();
 
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-
-
         zzapApi = retrofit.create(ZzapApi.class);
-
     }
 
     public static ZzapApi getZzapApi() {

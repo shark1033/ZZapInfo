@@ -1,13 +1,7 @@
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Excel {
@@ -18,36 +12,28 @@ public class Excel {
 
     private HSSFWorkbook myExcelBook;
     private HSSFSheet myExcelSheet;
-    private HSSFCellStyle[] style=new HSSFCellStyle[3];
+    private HSSFCellStyle[] style = new HSSFCellStyle[3];
+    private HashMap<String, String> h;
+    private FileInputStream file;
+    private HSSFCellStyle style1, style2, style3;
 
-
-    public static void main(String[] args) {
-        Excel excel = new Excel();
-        excel.init();
-    }
-
+    //загрузка документа и создания экземпляров
     public void init() {
         try {
-            FileInputStream file = new FileInputStream("C:\\Users\\shark\\Desktop\\ПРАЙС И ТЕРМАЛ.xls");
+            file = new FileInputStream("C:\\Users\\shark\\Desktop\\new.xls");
             myExcelBook = new HSSFWorkbook(file);
             myExcelSheet = myExcelBook.getSheet("Лист1");
-            HSSFRow row = myExcelSheet.getRow(6);
-            System.out.println(row.getCell(1));
-
-            saveAndClose(file);
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
     //перезаписываем и закрваем файл
-    public void saveAndClose(FileInputStream file){
+    public void saveAndClose() {
         try {
-           // myExcelBook.write(new FileOutputStream(new File("C:\\Users\\shark\\Desktop\\ПРАЙС И ТЕРМАЛ.xls")));
-            myExcelBook.write(new FileOutputStream(new File("..\\ПРАЙС И ТЕРМАЛ.xls")));
+            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\shark\\Desktop\\new.xls")));
             file.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,43 +42,117 @@ public class Excel {
     }
 
     // создаём ячейки в указанном столбце начиная с определённого ряда
-    public void createCells(HSSFSheet hssfSheet, int rowStart, int column) {
-        int rows = hssfSheet.getPhysicalNumberOfRows();
+    public void createCells(int rowStart, int column) {
+        int rows = myExcelSheet.getLastRowNum();
+        createStyles();
         for (int i = rowStart; i < rows; i++) {
-            HSSFCell cell = hssfSheet.getRow(i).createCell(column);
+            HSSFCell cell = myExcelSheet.getRow(i).createCell(column);
+            cell.setCellStyle(style1);
+        }
+    }
+    //устанавливаем стили ячейкам
+    public void setStyles(int rowStart, int column) {
+        int rows = myExcelSheet.getLastRowNum();
+        createStyles();
+        for (int i = rowStart; i < rows; i++) {
+            HSSFCell cell = myExcelSheet.getRow(i).getCell(column);
+            cell.setCellStyle(style1);
         }
     }
     // создаём стили для ячеек
-    public void createStyles(){
+    public void createStyles() {
         //Дороже конкурента
-        HSSFCellStyle style1 = myExcelBook.createCellStyle();
+        style1 = myExcelBook.createCellStyle();
         style1.setFillBackgroundColor(HSSFColor.RED.index);
-        style1.setAlignment(XSSFCellStyle.ALIGN_FILL);
+        style1.setAlignment(HSSFCellStyle.ALIGN_FILL);
+        style1.setFillForegroundColor(HSSFColor.RED.index);
+        style1.setFillPattern( HSSFCellStyle.ALIGN_FILL);
         //Примерно также как у конкурента или равно
-        HSSFCellStyle style2 = myExcelBook.createCellStyle();
-        style1.setFillBackgroundColor(HSSFColor.YELLOW.index);
-        style1.setAlignment(XSSFCellStyle.ALIGN_FILL);
+        style2 = myExcelBook.createCellStyle();
+        style2.setFillBackgroundColor(HSSFColor.YELLOW.index);
+        style2.setAlignment(HSSFCellStyle.ALIGN_FILL);
         //меньше чем у конкурента
-        HSSFCellStyle style3 = myExcelBook.createCellStyle();
-        style1.setFillBackgroundColor(HSSFColor.GREEN.index);
-        style1.setAlignment(XSSFCellStyle.ALIGN_FILL);
-
-        style[0]=style1;
-        style[1]=style2;
-        style[2]=style3;
-
+        style3 = myExcelBook.createCellStyle();
+        style3.setFillBackgroundColor(HSSFColor.GREEN.index);
+        style3.setAlignment(HSSFCellStyle.ALIGN_FILL);
     }
-
-    public void read(HSSFSheet hssfSheet, int rowStart, int column, HashMap<String,String> hashMap, int column2){
-        for(int i=rowStart;i<=hssfSheet.getPhysicalNumberOfRows();i++){
+    //читаем информацию с листа
+    public void read(int rowStart, int rowEnd, int column, int column2, int column3) {
+        System.out.println(myExcelSheet.getLastRowNum());
+        for (int i = rowStart; i < rowEnd; i++) {
             //HSSFCell cell = hssfSheet.getRow(i).getCell(column);
             HSSFRow row = myExcelSheet.getRow(i);
-            if(row.getCell(1).getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
-                String name = row.getCell(0).getStringCellValue();
 
+                String name1 = row.getCell(column).getStringCellValue();
+                System.out.print("MAKER2: "+name1);
 
-            }
+                String name2 = row.getCell(column2).getStringCellValue();
+                System.out.print("    oem2 : " + name2);
+
+                double number = row.getCell(column3).getNumericCellValue();
+                System.out.print("    price1: " + number);
+
+            System.out.println("\n");
         }
     }
+    //геттеры и сеттеры
+    public void setOemColumn(int oemColumn) {
+        this.oemColumn = oemColumn;
+    }
+
+    public void setMakerColumn(int makerColumn) {
+        this.makerColumn = makerColumn;
+    }
+
+    public void setPriceColumn(int priceColumn) {
+        this.priceColumn = priceColumn;
+    }
+
+    public int getOemColumn() {
+        return oemColumn;
+    }
+
+    public int getMakerColumn() {
+        return makerColumn;
+    }
+
+    public int getPriceColumn() {
+        return priceColumn;
+    }
+
+    public HSSFWorkbook getMyExcelBook() {
+        return myExcelBook;
+    }
+
+    public HSSFSheet getMyExcelSheet() {
+        return myExcelSheet;
+    }
+
+    public HSSFCellStyle[] getStyle() {
+        return style;
+    }
+
+    public HashMap<String, String> getH() {
+        return h;
+    }
+
+    public FileInputStream getFile() {
+        return file;
+    }
+}
+//тестовы класс
+class Main1 {
+    public static void main(String[] args) {
+        Excel excel = new Excel();
+        excel.init();
+        excel.setMakerColumn(1);
+        excel.setOemColumn(2);
+        excel.setPriceColumn(10);
+        excel.createStyles();
+        excel.createCells(7,11);
+        excel.read( 7, 2216, excel.getMakerColumn(), excel.getOemColumn(), excel.getPriceColumn());
+        excel.saveAndClose();
+    }
+
 
 }
