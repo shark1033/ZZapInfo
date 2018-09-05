@@ -38,7 +38,6 @@ public class Excel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     // создаём ячейки в указанном столбце начиная с определённого ряда
