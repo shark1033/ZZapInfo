@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-        ConnectToZZap.getZzapApi().getInfo("165959455L", "AUDI").enqueue(new Callback<ResponseBody>() {
+        ConnectToZZap.getZzapApi().getInfo("164000H120", "TOYOTA").enqueue(new Callback<ResponseBody>() {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 System.out.println("Start printing");
