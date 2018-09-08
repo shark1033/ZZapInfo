@@ -9,11 +9,11 @@ public class Excel {
     private int oemColumn;
     private int makerColumn;
     private int priceColumn;
+    private int plusColumn;
 
     private HSSFWorkbook myExcelBook;
     private HSSFSheet myExcelSheet;
     private HSSFCellStyle[] style = new HSSFCellStyle[3];
-    private HashMap<String, String> h;
     private FileInputStream file;
     private HSSFCellStyle style1, style2, style3;
 
@@ -94,6 +94,40 @@ public class Excel {
             System.out.println("\n");
         }
     }
+
+    public boolean readPlus(int rowIndex){
+        HSSFRow row = myExcelSheet.getRow(rowIndex);
+        if(row.getCell(plusColumn).getStringCellValue().equals("+")){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public String readMaker(int rowIndex){
+        HSSFRow row = myExcelSheet.getRow(rowIndex);
+
+            String name = row.getCell(makerColumn).getStringCellValue();
+            System.out.print("MAKER: "+name);
+            return name;
+    }
+
+    public String readOEM(int rowIndex){
+        HSSFRow row = myExcelSheet.getRow(rowIndex);
+            String name = row.getCell(oemColumn).getStringCellValue();
+            System.out.print("OEM: "+name);
+            return name;
+    }
+    public double readPrice(int rowIndex){
+        HSSFRow row = myExcelSheet.getRow(rowIndex);
+            double price=row.getCell(priceColumn).getNumericCellValue();
+            System.out.print("Price: "+price);
+            return price;
+    }
+
+
+
     //геттеры и сеттеры
     public void setOemColumn(int oemColumn) {
         this.oemColumn = oemColumn;
@@ -131,12 +165,13 @@ public class Excel {
         return style;
     }
 
-    public HashMap<String, String> getH() {
-        return h;
-    }
 
     public FileInputStream getFile() {
         return file;
+    }
+
+    public void setPlusColumn(int plusColumn) {
+        this.plusColumn = plusColumn;
     }
 }
 //тестовы класс

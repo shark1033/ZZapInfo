@@ -45,9 +45,13 @@ import com.google.gson.annotations.SerializedName;
         @SerializedName("local")
         @Expose
         private Integer local;
+
+
         @SerializedName("price")
         @Expose
         private String price;
+
+
         @SerializedName("price_date")
         @Expose
         private String priceDate;
@@ -192,9 +196,11 @@ import com.google.gson.annotations.SerializedName;
             this.local = local;
         }
 
+
         public String getPrice() {
             return price;
         }
+
 
         public void setPrice(String price) {
             this.price = price;
