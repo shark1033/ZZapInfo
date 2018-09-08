@@ -9,14 +9,16 @@ import java.util.HashMap;
 
 public class Main {
 
-    private double[] price=new double[10];
+    private static double[] price=new double[20];
+    private static GetJson getJson2;
 
 
     public static void main(String[] args) {
+        startProgramm();
 
     }
 
-    public void getJson(String part_number, String class_man){
+    public static void getJson(String part_number, String class_man){
         //ConnectToZZap.getZzapApi().getInfo("164000H120", "TOYOTA").enqueue(new Callback<ResponseBody>() {
         ConnectToZZap.getZzapApi().getInfo(part_number, class_man).enqueue(new Callback<ResponseBody>() {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -29,12 +31,12 @@ public class Main {
                     Gson gson = new Gson();
 
                     //Type collectionType = new TypeToken<GetJson>(){}.getType();
-                    GetJson getJson2 = gson.fromJson(s, GetJson.class);
+                    getJson2 = gson.fromJson(s, GetJson.class);
 
-                    for (Table itrTable : getJson2.getTable()) {
-                        System.out.println(itrTable.getPrice());
-                        //price[]=Double.valueOf(itrTable.getPrice());
-                    }
+//                    for (Table itrTable : getJson2.getTable()) {
+//                        System.out.println(itrTable.getPrice());
+//                        //price[]=Double.valueOf(itrTable.getPrice());
+//                    }
 
 
                 } catch (IOException e) {
@@ -48,7 +50,7 @@ public class Main {
         });
     }
 
-    private void startProgramm(){
+    private static void startProgramm(){
 
         String part_number;
         String class_man;
@@ -77,6 +79,17 @@ public class Main {
 
             getJson(arrayExcel[0],arrayExcel[1]);
 
+            int y=0;
+            for (Table itrTable : getJson2.getTable()){
+                price[y]=Double.valueOf(itrTable.getPrice());
+                System.out.println(price[y]);
+                y++;
+            }
+
+            for(int t=0;t<4000;t++){
+                System.out.println("@");
+            }
+
 
 
 
@@ -85,7 +98,7 @@ public class Main {
 //        excel.createStyles();
 //        excel.createCells(7,11);
 //        excel.read( 7, 2216, excel.getMakerColumn(), excel.getOemColumn(), excel.getPriceColumn());
-//        excel.saveAndClose();
+        excel.saveAndClose();
     }
 
 

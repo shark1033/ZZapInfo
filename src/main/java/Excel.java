@@ -20,7 +20,7 @@ public class Excel {
     //загрузка документа и создания экземпляров
     public void init() {
         try {
-            file = new FileInputStream("C:\\Users\\shark\\Desktop\\new.xls");
+            file = new FileInputStream("C:\\Users\\User\\Desktop\\Прайсы\\new.xls");
             myExcelBook = new HSSFWorkbook(file);
             myExcelSheet = myExcelBook.getSheet("Лист1");
         } catch (FileNotFoundException e) {
@@ -33,7 +33,7 @@ public class Excel {
     //перезаписываем и закрваем файл
     public void saveAndClose() {
         try {
-            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\shark\\Desktop\\new.xls")));
+            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\User\\Desktop\\Прайсы\\new.xls")));
             file.close();
         } catch (IOException e) {
             e.printStackTrace();
