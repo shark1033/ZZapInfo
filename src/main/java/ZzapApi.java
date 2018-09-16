@@ -14,7 +14,9 @@ import retrofit2.http.Query;
 
 
     public interface ZzapApi {
-        @GET("/webservice/datasharing.asmx/GetSearchResult?login=&password=&location=1&row_count=10&api_key=EAAAACsHYUQNdLtum/Kb2AxYrgfys/pWPm7fNZG18WCNt4BF")
+        //@GET("/webservice/datasharing.asmx/GetSearchResult?login=&password=&location=1&row_count=100&api_key=EAAAACsHYUQNdLtum/Kb2AxYrgfys/pWPm7fNZG18WCNt4BF")
+        @GET("/webservice/datasharing.asmx/GetSearchResultV2?login=&password=&search_text=&location=1&row_count=500&type_request=1&api_key=EAAAACsHYUQNdLtum/Kb2AxYrgfys/pWPm7fNZG18WCNt4BF")
+
         Call<ResponseBody> getInfo(@Query("partnumber") String part_number, @Query("class_man") String class_man);
 
 //      @GET("/webservice/datasharing.asmx/GetSearchResult?login=&password=&partnumber=19010RZAA51&class_man=HONDA&location=1&row_count=5&api_key=EAAAACsHYUQNdLtum/Kb2AxYrgfys/pWPm7fNZG18WCNt4BF")

@@ -2,6 +2,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Excel {
@@ -21,14 +22,14 @@ public class Excel {
     private HSSFSheet myExcelSheet;
     private HSSFCellStyle[] style = new HSSFCellStyle[3];
     private FileInputStream file;
-    private HSSFCellStyle style1, style2, style3, style4;
+    private HSSFCellStyle style1, style2, style3, style4,style5, style6;
 
     //загрузка документа и создания экземпляров
     public void init() {
         try {
-            file = new FileInputStream("C:\\Users\\User\\Desktop\\Прайсы\\new2.xls");
+            file = new FileInputStream("C:\\Users\\User\\Desktop\\Прайсы\\ARprice-ZZAP.xls");
             myExcelBook = new HSSFWorkbook(file);
-            myExcelSheet = myExcelBook.getSheet("Лист1");
+            myExcelSheet = myExcelBook.getSheetAt(0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -39,7 +40,7 @@ public class Excel {
     //перезаписываем и закрваем файл
     public void saveAndClose() {
         try {
-            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\User\\Desktop\\Прайсы\\new2.xls")));
+            myExcelBook.write(new FileOutputStream(new File("C:\\Users\\User\\Desktop\\Прайсы\\ARprice-ZZAP.xls")));
             file.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,6 +96,18 @@ public class Excel {
         style4.setFillForegroundColor(HSSFColor.BLACK.index);
         style4.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         style4.setFillPattern( HSSFCellStyle.SOLID_FOREGROUND);
+
+        style5 = myExcelBook.createCellStyle();
+        style5.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
+        style5.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style5.setFillPattern( HSSFCellStyle.SOLID_FOREGROUND);
+
+        style6 = myExcelBook.createCellStyle();
+        style6.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
+        style6.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        style6.setFillPattern( HSSFCellStyle.SOLID_FOREGROUND);
+
+
     }
 
     //читаем информацию с листа
@@ -165,36 +178,58 @@ public class Excel {
 
         double abs;
 
-        if(ourPrice>minPrices[0]){
-            abs=ourPrice-minPrices[0];
-            System.out.println("abs: " +abs);
-            row.getCell(absPriceColumn).setCellValue(abs);
-            row.getCell(absPriceColumn).setCellStyle(chooseStyle(abs,isonzzap));
-            System.out.println("условие 1");
-        }
-        else if(ourPrice==minPrices[0]){
-            abs=minPrices[0]-minPrices[1]; //no!
-            System.out.println("abs: " +abs);
-            row.getCell(absPriceColumn).setCellValue(abs);
-            row.getCell(absPriceColumn).setCellStyle(chooseStyle(abs,isonzzap));
-            System.out.println("условие 2");
+        if(minPrices[0]!=0) {
+
+            if (ourPrice > minPrices[0]) {
+                abs = ourPrice - minPrices[0];
+                System.out.println("abs: " + abs);
+                row.getCell(absPriceColumn).setCellValue(abs);
+                row.getCell(absPriceColumn).setCellStyle(chooseStyle(abs, isonzzap));
+                System.out.println("условие 1");
+            } else if (ourPrice == minPrices[0]) {
+                if (firstCompany.equals("Авто Радиатор 24/3")) {
+                    row.getCell(absPriceColumn).setCellStyle(style5);
+                    System.out.println("условие 2.1");
+                    if(minPrices[2]!=0) {
+                        abs = minPrices[2] - minPrices[1];
+                        row.getCell(absPriceColumn).setCellValue(abs);
+                    }
+                    else {
+                        row.getCell(absPriceColumn).setCellValue(0);
+                    }
+
+                } else if (firstCompany.equals("Авто Радиатор ООО")) {
+                    if(minPrices[1]!=0) {
+                        abs = minPrices[0] - minPrices[1]; //no!
+                        System.out.println("abs: " + abs);
+                        row.getCell(absPriceColumn).setCellStyle(chooseStyle(abs, isonzzap));
+                        row.getCell(absPriceColumn).setCellValue(abs * -1);
+                        System.out.println("условие 2.2");
+                    }
+                    else {
+                        System.out.println("условие 2.3");
+                        row.getCell(absPriceColumn).setCellStyle(style3);
+                    }
+                } else {
+                    if(minPrices[2]!=0) {
+                        abs = minPrices[2] - minPrices[1];
+                        row.getCell(absPriceColumn).setCellValue(abs);
+                        row.getCell(absPriceColumn).setCellStyle(style6);
+                    }
+                    else{
+                        row.getCell(absPriceColumn).setCellStyle(style6);
+                    }
+                }
+            } else {
+                row.getCell(absPriceColumn).setCellStyle(style4);
+                System.out.println("условие 3");
+            }
         }
         else {
-            //abs=minPrices[0]-ourPrice;
-            //row.getCell(absPriceColumn).setCellValue(abs);
             row.getCell(absPriceColumn).setCellStyle(style4);
-            System.out.println("условие 3");
-        }
+            System.out.println("условие 3");}
 
         row.getCell(firstCompanyColumn).setCellValue(firstCompany);
-        if(ourPrice==minPrices[0]){
-            row.getCell(ourPositionColumn).setCellValue(1);
-        }
-        else{
-            row.getCell(ourPositionColumn).setCellValue(0);
-        }
-
-
 
     }
 
@@ -221,10 +256,21 @@ public class Excel {
     }
 
 
+    public void clearCells(int rowStart,int rowEnd){
+        HSSFRow row;
+        System.out.println("Начинаю очистку ячеек...");
+     for(int i=rowStart;i<rowEnd;i++){
+
+         row=myExcelSheet.getRow(i);
+         row.removeCell(row.getCell(ourPriceColumn));
+         row.removeCell(row.getCell(firstPriceColumn));
+         row.removeCell(row.getCell(firstCompanyColumn));
+         row.removeCell(row.getCell(absPriceColumn));
+     }
+        System.out.println("Finished");
+    }
 
     //геттеры и сеттеры
-
-
     public void setFirstCompanyColumn(int firstCompanyColumn) {
         this.firstCompanyColumn = firstCompanyColumn;
     }
@@ -293,15 +339,14 @@ public class Excel {
 //тестовы класс
 class Main1 {
     public static void main(String[] args) {
-        Excel excel = new Excel();
-        excel.init();
-        excel.setMakerColumn(1);
-        excel.setOemColumn(2);
-        excel.setPriceColumn(10);
-        excel.createStyles();
-        excel.createCells(7,11);
-        excel.read( 7, 2216, excel.getMakerColumn(), excel.getOemColumn(), excel.getPriceColumn());
-        excel.saveAndClose();
+        ArrayList<Double> arrayList=new ArrayList<Double>();
+        arrayList.add(4.5);
+        if (arrayList.size()==0){
+            System.out.println("0");
+        }
+        else if(arrayList.size()==1){
+            System.out.println("1");
+        }
     }
 
 
